@@ -13,6 +13,10 @@ namespace Event {
         time: number
       }
       export interface StartPlayerReqeust {
+        time: number
+      }
+      export interface StopVideoReqeust{
+
       }
       export interface JoinRoomRequest {
         roomId: string;
@@ -43,6 +47,7 @@ namespace Event {
 
   export const EventRequestConst = {
     SynchronousProgressReqeust: 'SynchronousProgressReqeust',
+    StopVideoReqeust: 'StopVideoReqeust',
     StartPlayerReqeust: 'StartPlayerReqeust',
     CreatedRoomRequest: 'CreatedRoomRequest',
     JoinRoomRequest: 'JoinRoomRequest',
@@ -55,6 +60,7 @@ namespace Event {
 
   export const EventResponeseConst = {
     SynchronousProgressResponese: 'SynchronousProgressResponese',
+    StopVideoResponese: 'StopVideoResponese',
     StartPlayerResponese: 'StartPlayerResponese',
     CreatedRoomResponese: 'CreatedRoomResponese',
     JoinRoomResponese: 'JoinRoomResponese',

@@ -4,24 +4,27 @@
  * @Author: icxl
  * @Date: 2021-07-12 18:51:39
  * @LastEditors: icxl
- * @LastEditTime: 2021-07-13 18:45:01
+ * @LastEditTime: 2021-07-14 15:58:45
  */
-
+import React, { useEffect, useState } from "react";
 import { randomInt } from 'crypto';
 import { Socket, io } from 'socket.io-client';
 import { _Response } from '../types/type';
 import Event from "./event";
 import Bus from '../utils/event-bus'
+import { setState } from "concent";
+
 export class WebsocketSignal {
 
   roomId: string
   socket: Socket;
   url: string;
-  isSelfCreate: boolean = false;
+
   constructor(_roomId: string, url: string) {
+    
     this.roomId = _roomId;
     this.url = url;
-    this.socket = io('wss://localhost:3016');
+    this.socket = io('wss://mediasoup.yangqungongshe.com:3018');
     this.initSocketEvent();
     this.createOrJoinRoom(this.roomId, this.url);
   }
@@ -48,7 +51,7 @@ export class WebsocketSignal {
   createOrJoinRoom(roomId: string, url: string) {
     this.request(Event.EventRequestConst.ShowRoomPeersRequest, { roomId: roomId }).then(({ data, isError }: _Response) => {
       if (isError) {
-        this.isSelfCreate = true;
+        setState('roomState', {roomCreated:true});
         this.request(Event.EventRequestConst.CreatedRoomRequest, { roomId: roomId, url: url }).then(({ data, isError }: _Response) => {
           this.request(Event.EventRequestConst.JoinRoomRequest, { roomId: roomId, name: Date().toLocaleString() }).then(({ data, isError }: _Response) => {
             console.log(data);
@@ -57,7 +60,7 @@ export class WebsocketSignal {
           });
         });
       } else {
-        this.isSelfCreate = false;
+        setState('roomState', {roomCreated:false});
         if (data.peers.length >= 2) {
           alert('房间人数已满');
           return;

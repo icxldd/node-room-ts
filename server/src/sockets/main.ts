@@ -4,7 +4,7 @@
  * @Author: icxl
  * @Date: 2021-07-12 15:31:40
  * @LastEditors: icxl
- * @LastEditTime: 2021-07-13 18:21:23
+ * @LastEditTime: 2021-07-14 16:15:03
  */
 import { join } from "path";
 import { Server } from "socket.io";
@@ -21,7 +21,7 @@ export default class SocketImpl {
     this.httpsServer = _httpsServer;
     this.io = new Server(this.httpsServer, {
       cors: {
-        origin: "http://localhost:3000",
+        origin: "*",
         methods: ["GET", "POST"]
       }
     });
@@ -46,9 +46,7 @@ export default class SocketImpl {
         room?.broadCast(Event.EventResponeseConst.SynchronousProgressResponese, { time }, socket.id);
       });
 
-
-
-      socket.on(Event.EventRequestConst.StartPlayerReqeust, ({  }: Event.EventParams.In.StartPlayerReqeust, cb: any) => {
+      socket.on(Event.EventRequestConst.StopVideoReqeust, ({  }: Event.EventParams.In.StopVideoReqeust, cb: any) => {
         console.log(`sync progress room ${socket.id}`);
         let roomId = socket_room_id;
         if (!this.rooms.has(roomId)) {
@@ -57,7 +55,19 @@ export default class SocketImpl {
         }
         let room = this.rooms.get(roomId);
         let userId = socket.id;
-        room?.broadCast(Event.EventResponeseConst.StartPlayerResponese, {  }, socket.id);
+        room?.broadCast(Event.EventResponeseConst.StopVideoResponese, {  }, socket.id);
+      });
+
+      socket.on(Event.EventRequestConst.StartPlayerReqeust, ({ time }: Event.EventParams.In.StartPlayerReqeust, cb: any) => {
+        console.log(`sync progress room ${socket.id}`);
+        let roomId = socket_room_id;
+        if (!this.rooms.has(roomId)) {
+          cb(Message.BuilderErrorMsg('房间不存在'));
+          return;
+        }
+        let room = this.rooms.get(roomId);
+        let userId = socket.id;
+        room?.broadAllCast(Event.EventResponeseConst.StartPlayerResponese, { time });
       });
       socket.on(Event.EventRequestConst.CreatedRoomRequest, ({ roomId, url }: Event.EventParams.In.CreatedRoomRequest, cb: any) => {
         console.log(`created room ${socket.id}`);

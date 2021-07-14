@@ -4,8 +4,9 @@
  * @Author: icxl
  * @Date: 2021-07-12 17:59:33
  * @LastEditors: icxl
- * @LastEditTime: 2021-07-13 16:52:27
+ * @LastEditTime: 2021-07-14 10:38:53
  */
+import './states/room-video-state';
 import React from 'react';
 import './App.css';
 import { Navigate, Route, Routes } from "react-router";
